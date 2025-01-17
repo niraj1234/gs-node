@@ -27,18 +27,24 @@ const url = require('url');
 
 
 const server = http.createServer((req,res) => {
-    const {pathname} = url.parse(req.url);
-    if(pathname.startsWith('/user/')){
-        const userId = pathname.split('/')[2];
-        res.writeHead(200 , {'content-type':'text/plain'});
-        res.end(`UserId : ${userId}`);
-    }else{
-        res.writeHead(404 , {'content-type':'text/plain'});
-        res.end('Route not found');
-    }
+    logRequest(req,res, (req,res) => {
+        const {pathname} = url.parse(req.url);
+        if(pathname.startsWith('/user/')){
+            const userId = pathname.split('/')[2];
+            res.writeHead(200 , {'content-type':'text/plain'});
+            res.end(`UserId : ${userId}`);
+        }else{
+            res.writeHead(404 , {'content-type':'text/plain'});
+            res.end('Route not found');
+        }    
+    })
 });
 
 
+function logRequest(req,res,next){
+    console.log(`${req.method} request made to ${req.url}`);
+    next(req,res);
+}
 
 
 
